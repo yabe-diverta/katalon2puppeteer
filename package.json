@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "a tiny script transpiles json exported by Katalon web recorder to puppeteer script.",
   "scripts": {
-    "build": "tsc --build tsconfig.json"
+    "build": "tsc --build tsconfig.json",
+    "prepare": "npm run build"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
