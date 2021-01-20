@@ -18,7 +18,7 @@ program
     '-i, --input <value>',
     "path for JSON files (requires enclosing with single quotation when you use glob, e.g. './test/**/*.json')."
   )
-  .option('-o, --output <value>', 'Output directory', process.cwd())
+  .option('-o, --output <value>', 'Output directory', '.')
   .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
   .option('--capture', 'either cpture screenshot of not.', false)
   .option(
@@ -32,6 +32,8 @@ const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
 
 if (Transpiler) {
   const options = program.opts();
+  options.basicAuth =
+    options.basicAuth !== undefined ? options.basicAuth.split(':') : ['', ''];
   Transpiler.create(options);
   process.exit(0);
 }

@@ -2,6 +2,8 @@ import './extensions';
 import { locatorToSelector } from './locatorToSelector';
 import { waitForNavigationIfNeeded } from './waitForNavigationIfNeeded';
 import { seleniumKeyVars } from './seleniumKeyVars';
+import { Global } from './global';
+import { PuppeteerJsonObj } from './type';
 
 /**
  * @author      SamKirkland
@@ -14,7 +16,7 @@ const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
     const [protocol, hostname] = x.selector
       .split(/^(http:\/\/|https:\/\/)/gi)
       .filter((v: string) => v !== '');
-    const [username, password] = x.basicAuth;
+    const [username, password] = Global.option.basicAuth;
     const url =
       username !== ''
         ? `${protocol}${username}:${password}@${hostname}`
@@ -101,14 +103,7 @@ const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
     await page.waitForXPath("${x.selector}");`,
 };
 
-export function transpile(def: {
-  command: any;
-  target: any;
-  value: any;
-  basicAuth: any;
-  capture: boolean;
-  delay: number;
-}) {
+export function transpile(def: PuppeteerJsonObj) {
   const selector = locatorToSelector(def.target);
   const waifNavigationCommand = waitForNavigationIfNeeded(def.target);
   const keyCommand = seleniumKeyVars(def.value);

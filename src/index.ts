@@ -1,12 +1,22 @@
-import './extensions';
-import { transpile } from './transpliler';
-import { CommandOption } from './type';
-import path from 'path';
-import glob from 'glob';
 import fs from 'fs';
+import glob from 'glob';
+import mkdirp from 'mkdirp';
+import path from 'path';
+import './extensions';
+import { Global } from './global';
+import { transpile } from './transpliler';
+import { CommandOption, PuppeteerJson, PuppeteerJsonObj } from './type';
 
 const getWholeScriptTemplate = (commandTemplate: string) => `
+const fs = require('fs')
 const puppeteer = require('puppeteer');
+
+function mkdir(dirName) {
+  if (!fs.existsSync(dirName)){
+    fs.mkdirSync(dirName);
+  }
+}
+mkdir('${path.join(Global.option.output, 'capture')}');
 
 function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -41,25 +51,36 @@ ${commandTemplate}
 })();
 `;
 
-const getCommandTemplate = (defs: any[]) =>
+const getCapturePath = (
+  jsonName: string,
+  idx: number,
+  def: PuppeteerJsonObj
+) => {
+  const id = Object.entries(def)
+    .map(([k, v]) => `${k}=${v}`)
+    .join(',');
+  const fileName = `${jsonName}_${idx.pad()}_${id}`.encode().add('.png');
+  return path.join(Global.option.output, 'capture', fileName);
+};
+
+const getCommandTemplate = (defs: PuppeteerJson, fileIdx: number) =>
   defs
-    .map((def) => ({
-      command: def.command.toLowerCase(),
-      target: def.target.toLowerCase(),
-      ...def,
-    }))
     .map(transpile)
     .map(({ code, def }, idx) =>
       code
         .add(
           `
-          await delay(${def.delay})`
+          await delay(${Global.option.delay})`
         )
         .add(
-          def.capture
+          Global.option.capture
             ? `
           await page.screenshot({
-            path: './${idx.pad()}.png',
+            path: "${getCapturePath(
+              path.basename(Global.JSONs[fileIdx]),
+              idx,
+              def
+            )}",
             type: 'png',
             fullPage: true
           });`
@@ -77,17 +98,24 @@ const getCommandTemplate = (defs: any[]) =>
     .join('\n\n');
 
 export function create(option: CommandOption) {
-  const JSONs = glob.sync(option.input);
-  const basicAuth = option.basicAuth?.split(':') ?? ['', ''];
+  Global.option = option;
+  Global.JSONs = glob.sync(option.input);
 
-  JSONs.map((p) => require(path.resolve(process.cwd(), p)))
-    .map((def) => def.map((d: any) => ({ ...d, ...option, basicAuth })))
+  Global.JSONs.map((p) => require(path.join(process.cwd(), p)) as PuppeteerJson)
+    .map((def) =>
+      def.map((d) => ({
+        ...d,
+        command: d.command.toLowerCase(),
+        target: d.target.toLowerCase(),
+      }))
+    )
     .map(getCommandTemplate)
     .map(getWholeScriptTemplate)
     .forEach((res, idx) => {
-      const name = path.basename(JSONs[idx]);
+      const name = path.basename(Global.JSONs[idx]);
       const writeFileName = name.replace(/\.json$/gi, '.e2e.test.js');
-      const p = path.resolve(option.output, writeFileName);
+      const p = path.join(option.output, writeFileName);
+      mkdirp.sync(path.dirname(p));
       fs.writeFileSync(p, res, { encoding: 'utf8' });
     });
 }
