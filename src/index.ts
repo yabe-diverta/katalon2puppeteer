@@ -9,10 +9,8 @@ const getWholeScriptTemplate = (commandTemplate: string) => `
 const puppeteer = require('puppeteer');
 
 function delay(time) {
-	return new Promise(function(resolve) { 
-		setTimeout(resolve, time)
-	});
- }
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 (async () => {
     const browser = await puppeteer.launch({
@@ -45,13 +43,29 @@ ${commandTemplate}
 
 const getCommandTemplate = (defs: any[]) =>
   defs
-    .map(({ command, target, value, basicAuth: basicAuth }) => ({
-      command: command.toLowerCase(),
-      target: target.toLowerCase(),
-      value,
-      basicAuth,
+    .map((def) => ({
+      command: def.command.toLowerCase(),
+      target: def.target.toLowerCase(),
+      ...def,
     }))
     .map(transpile)
+    .map(({ code, def }, idx) =>
+      code
+        .add(
+          `
+          await delay(${def.delay})`
+        )
+        .add(
+          def.capture
+            ? `
+          await page.screenshot({
+            path: './${idx.pad()}.png',
+            type: 'png',
+            fullPage: true
+          });`
+            : ``
+        )
+    )
     .map((code) =>
       code
         .split('\n')
@@ -67,12 +81,7 @@ export function create(option: CommandOption) {
   const basicAuth = option.basicAuth?.split(':') ?? ['', ''];
 
   JSONs.map((p) => require(path.resolve(process.cwd(), p)))
-    .map((def) =>
-      def.map((d: any) => {
-        d.basicAuth = basicAuth;
-        return d;
-      })
-    )
+    .map((def) => def.map((d: any) => ({ ...d, ...option, basicAuth })))
     .map(getCommandTemplate)
     .map(getWholeScriptTemplate)
     .forEach((res, idx) => {

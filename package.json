@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "bin": {
-      "k2p": "bin/index.js"
+    "k2p": "bin/index.js"
   },
   "files": [
     "bin/**/*.js",
@@ -32,7 +32,7 @@
     {
       "name": "Yusei Abe",
       "email": "yabe@diverta.co.jp",
-      "url" : "https://github.com/yabe-diverta"
+      "url": "https://github.com/yabe-diverta"
     }
   ],
   "license": "MPL",

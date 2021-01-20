@@ -20,17 +20,18 @@ program
   )
   .option('-o, --output <value>', 'Output directory', process.cwd())
   .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
+  .option('--capture', 'either cpture screenshot of not.', false)
+  .option(
+    '--delay <ms>',
+    'number that specifies dalaying after each operation executed.',
+    0
+  )
   .parse(process.argv);
 
 const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
 
 if (Transpiler) {
   const options = program.opts();
-  // try {
   Transpiler.create(options);
   process.exit(0);
-  // } catch (err) {
-  //   console.error(error);
-  //   process.exit(1);
-  // }
 }

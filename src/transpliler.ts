@@ -101,28 +101,25 @@ const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
     await page.waitForXPath("${x.selector}");`,
 };
 
-export function transpile({
-  command,
-  target,
-  value,
-  basicAuth,
-}: {
+export function transpile(def: {
   command: any;
   target: any;
   value: any;
   basicAuth: any;
+  capture: boolean;
+  delay: number;
 }) {
-  const selector = locatorToSelector(target);
-  const waifNavigationCommand = waitForNavigationIfNeeded(target);
-  const keyCommand = seleniumKeyVars(value);
-  const transpiler = seleniumToPuppeteer[command];
-  return transpiler({
-    command,
-    target,
-    value,
-    selector,
-    waifNavigationCommand,
-    keyCommand,
-    basicAuth,
-  });
+  const selector = locatorToSelector(def.target);
+  const waifNavigationCommand = waitForNavigationIfNeeded(def.target);
+  const keyCommand = seleniumKeyVars(def.value);
+  const transpiler = seleniumToPuppeteer[def.command];
+  return {
+    code: transpiler({
+      selector,
+      waifNavigationCommand,
+      keyCommand,
+      ...def,
+    }),
+    def,
+  };
 }
