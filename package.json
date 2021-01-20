@@ -1,0 +1,46 @@
+{
+  "name": "katalon2puppeteer",
+  "version": "0.0.1",
+  "description": "a tiny script transpiles json exported by Katalon web recorder to puppeteer script.",
+  "scripts": {
+    "build": "tsc --build tsconfig.json"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "bin": {
+      "k2p": "bin/index.js"
+  },
+  "files": [
+    "bin/**/*.js",
+    "dist/**/*.js"
+  ],
+  "keywords": [
+    "katalon",
+    "node"
+  ],
+  "author": "Yusei Abe",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yabe-diverta/katalon2puppeteer.git"
+  },
+  "homepage": "https://github.com/yabe-diverta/katalon2puppeteer",
+  "bugs": {
+    "url": "https://github.com/yabe-diverta/katalon2puppeteer/issues"
+  },
+  "maintainers": [
+    {
+      "name": "Yusei Abe",
+      "email": "yabe@diverta.co.jp",
+      "url" : "https://github.com/yabe-diverta"
+    }
+  ],
+  "license": "MPL",
+  "devDependencies": {
+    "typescript": "^4.1.3",
+    "@types/glob": "^7.1.3"
+  },
+  "dependencies": {
+    "commander": "^7.0.0",
+    "glob": "^7.1.6"
+  }
+}
