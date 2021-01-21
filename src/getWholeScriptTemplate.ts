@@ -19,8 +19,11 @@ function delay(time) {
 
 (async () => {
     const browser = await puppeteer.launch({
-      headless: false,
-      defaultViewport: { width: 1920, height: 1080 },
+      headless: ${Global.option.headless},
+      defaultViewport: {
+        width: ${Global.option.viewportWidth},
+        height: ${Global.option.viewportHeight}
+      },
       args: ['--start-maximized']
     });
     const page = await browser.newPage();

@@ -20,11 +20,14 @@ program
   )
   .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
   .option('--capture', 'either cpture screenshot of not.', false)
+  .option('--headless', 'either enable chrome headless mode.', false)
   .option(
     '--delay <ms>',
     'number that specifies dalaying after each operation executed.',
     0
   )
+  .option('--viewportWidth <width>', 'viewport width.', 1920)
+  .option('--viewportHeight <height>', 'viewport height.', 1080)
   .parse(process.argv);
 
 const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
