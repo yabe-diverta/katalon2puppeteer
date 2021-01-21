@@ -27,11 +27,11 @@ const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
   doubleclick: (x) => `
     await page.waitForXPath("${x.selector}")
     element = await page.$x("${x.selector}");
-    await element[0].click({ clickCount: 2 });`,
+    await element[0].click({ clickCount: 2 }).catch(async (e) => await page.evaluate((elm) => { elm.click(); elm.click(); }, element[0]))`,
   click: (x) => `
     await page.waitForXPath("${x.selector}")
     element = await page.$x("${x.selector}");
-    await element[0].click();
+    await element[0].click().catch(async (e) => await page.evaluate((elm) => { elm.click(); elm.click(); }, element[0]))
     ${x.waifNavigationCommand}`,
   store: (x) => `
     await let ${x.selector} = ${x.value};`,
