@@ -1,6 +1,6 @@
 {
   "name": "katalon2puppeteer",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "a tiny script transpiles json exported by Katalon web recorder to puppeteer script.",
   "scripts": {
     "build": "tsc --build tsconfig.json",
