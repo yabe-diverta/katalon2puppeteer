@@ -1,3 +1,4 @@
+import mkdirp from 'mkdirp';
 import path from 'path';
 import { Global } from './global';
 import { transpile } from './transpliler';
@@ -16,7 +17,13 @@ const getCapturePath = (
     .encode()
     .add('.png');
 
-  return path.join(path.dirname(specFilePath), 'capture', fileName);
+  const dirPath =
+    Global.option.captureDir !== undefined
+      ? path.join(Global.option.captureDir, path.dirname(specFilePath))
+      : path.join(path.dirname(specFilePath), 'capture');
+  mkdirp(dirPath);
+
+  return path.join(path.relative(process.cwd(), dirPath), fileName);
 };
 
 export function getCommandTemplate(defs: PuppeteerJson, fileIdx: number) {

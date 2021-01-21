@@ -20,6 +20,10 @@ program
   )
   .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
   .option('--capture', 'either cpture screenshot of not.', false)
+  .option(
+    '--captureDir <dirPath>',
+    'target dir to store screenshots (only works when "capture" option is aopted).'
+  )
   .option('--headless', 'either enable chrome headless mode.', false)
   .option(
     '--delay <ms>',
