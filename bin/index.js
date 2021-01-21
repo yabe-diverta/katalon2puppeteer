@@ -18,7 +18,6 @@ program
     '-i, --input <value>',
     "path for JSON files (requires enclosing with single quotation when you use glob, e.g. './test/**/*.json')."
   )
-  .option('-o, --output <value>', 'Output directory', '.')
   .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
   .option('--capture', 'either cpture screenshot of not.', false)
   .option(
