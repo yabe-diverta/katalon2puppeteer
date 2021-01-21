@@ -102,13 +102,6 @@ export function create(option: CommandOption) {
   Global.JSONs = glob.sync(option.input);
 
   Global.JSONs.map((p) => require(path.join(process.cwd(), p)) as PuppeteerJson)
-    .map((def) =>
-      def.map((d) => ({
-        ...d,
-        command: d.command.toLowerCase(),
-        target: d.target.toLowerCase(),
-      }))
-    )
     .map(getCommandTemplate)
     .map(getWholeScriptTemplate)
     .forEach((res, idx) => {
