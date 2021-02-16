@@ -2,7 +2,6 @@ import './extensions';
 import { locatorToSelector } from './locatorToSelector';
 import { waitForNavigationIfNeeded } from './waitForNavigationIfNeeded';
 import { seleniumKeyVars } from './seleniumKeyVars';
-import { Global } from './global';
 import { PuppeteerJsonObj } from './type';
 
 /**
@@ -12,18 +11,8 @@ import { PuppeteerJsonObj } from './type';
  */
 
 const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
-  open: (x) => {
-    const [protocol, hostname] = x.selector
-      .split(/^(http:\/\/|https:\/\/)/gi)
-      .filter((v: string) => v !== '');
-    const [username, password] = Global.option.basicAuth;
-    const url =
-      username !== ''
-        ? `${protocol}${username}:${password}@${hostname}`
-        : `${protocol}${hostname}`;
-    return `
-    await page.goto("${url}", { waitUntil: 'networkidle0' });`;
-  },
+  open: (x) => `
+    await page.goto("${x.selector}", { waitUntil: 'networkidle0' });`,
   doubleclick: (x) => `
     await page.waitForXPath("${x.selector}")
     element = await page.$x("${x.selector}");

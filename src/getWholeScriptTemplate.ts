@@ -1,6 +1,25 @@
 import path from 'path';
 import { Global } from './global';
 
+function getCaptureDir(idx: number) {
+  const dirPath = path.join(path.dirname(Global.JSONs[idx]), 'capture');
+  return path.relative(process.cwd(), dirPath);
+}
+
+function getAuthExecutorTemplate() {
+  const basicAuth = Global.option.basicAuth;
+  if (basicAuth === undefined || !basicAuth?.includes(':')) {
+    return ``;
+  }
+
+  const [username, password] = basicAuth.split(':');
+  return `
+  await page.authenticate({
+    username: '${username}',
+    password: '${password}',
+  });`;
+}
+
 export function getWholeScriptTemplate(commandTemplate: string, idx: number) {
   return `
 const fs = require('fs')
@@ -11,7 +30,10 @@ function mkdir(dirName) {
     fs.mkdirSync(dirName);
   }
 }
-mkdir('${path.join(path.dirname(Global.JSONs[idx]), 'capture')}');
+const captureDir = process.env.CI !== undefined
+  ? '/tmp/${Date.now()}'
+  : '${getCaptureDir(idx)}';
+mkdir(captureDir);
 
 function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -19,7 +41,7 @@ function delay(time) {
 
 (async () => {
     const browser = await puppeteer.launch({
-      headless: ${Global.option.headless},
+      headless: process.env.CI !== undefined,
       defaultViewport: {
         width: ${Global.option.viewportWidth},
         height: ${Global.option.viewportHeight}
@@ -42,6 +64,8 @@ function delay(time) {
       console.info(msg);
     }
     let element, formElement, tabs;
+
+${getAuthExecutorTemplate()}
 
 ${commandTemplate}
 

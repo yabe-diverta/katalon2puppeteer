@@ -19,12 +19,6 @@ program
     "path for JSON files (requires enclosing with single quotation when you use glob, e.g. './test/**/*.json')."
   )
   .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
-  .option('--capture', 'either cpture screenshot of not.', false)
-  .option(
-    '--captureDir <dirPath>',
-    'target dir to store screenshots (only works when "capture" option is aopted).'
-  )
-  .option('--headless', 'either enable chrome headless mode.', false)
   .option(
     '--delay <ms>',
     'number that specifies dalaying after each operation executed.',
@@ -38,8 +32,6 @@ const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
 
 if (Transpiler) {
   const options = program.opts();
-  options.basicAuth =
-    options.basicAuth !== undefined ? options.basicAuth.split(':') : ['', ''];
   Transpiler.create(options);
   process.exit(0);
 }
