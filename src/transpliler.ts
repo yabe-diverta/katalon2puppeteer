@@ -1,8 +1,8 @@
 import './extensions';
 import { locatorToSelector } from './locatorToSelector';
-import { waitForNavigationIfNeeded } from './waitForNavigationIfNeeded';
 import { seleniumKeyVars } from './seleniumKeyVars';
 import { PuppeteerJsonObj } from './type';
+import { waitForNavigationIfNeeded } from './waitForNavigationIfNeeded';
 
 /**
  * @author      SamKirkland
@@ -25,6 +25,10 @@ const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
   store: (x) => `
     await let ${x.selector} = ${x.value};`,
   type: (x) => `
+    await page.waitForXPath("${x.selector}")
+    element = await page.$x("${x.selector}");
+    await element[0].type('${x.value}');`,
+  typeKeys: (x) => `
     await page.waitForXPath("${x.selector}")
     element = await page.$x("${x.selector}");
     await element[0].type('${x.value}');`,
@@ -97,6 +101,11 @@ export function transpile(def: PuppeteerJsonObj) {
   const waifNavigationCommand = waitForNavigationIfNeeded(def.target);
   const keyCommand = seleniumKeyVars(def.value);
   const transpiler = seleniumToPuppeteer[def.command];
+  if (typeof transpiler !== 'function') {
+    console.error(def.command)
+    throw Error(def.command);
+  }
+
   return {
     code: transpiler({
       selector,

@@ -20,9 +20,14 @@ export function getCommandTemplate(defs: PuppeteerJson, fileIdx: number) {
   return defs
     .map(transpile)
     .map(({ code, def }, idx) =>
-      code.add(`
+      code
+        .add(
+          `
             await delay(${Global.option.delay})
-      `).add(`
+      `
+        )
+        .add(
+          `
             await page.screenshot({
               path: \`\${captureDir}\${require('path').sep}${getCaptureFilePath(
                 fileIdx,
@@ -32,7 +37,9 @@ export function getCommandTemplate(defs: PuppeteerJson, fileIdx: number) {
               type: 'png',
               fullPage: true
             });
-      `)
+      `
+        )
+        .add(`console.log('puppeteer executed at no.${idx}')`)
     )
     .map((code) =>
       code
