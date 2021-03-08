@@ -30,8 +30,8 @@ function mkdir(dirName) {
     fs.mkdirSync(dirName);
   }
 }
-const captureDir = process.env.CI !== undefined
-  ? '/tmp/${Date.now()}'
+const captureDir = process.argv.slice(2)[0] !== undefined
+  ? process.argv.slice(2)[0]
   : '${getCaptureDir(idx)}';
 mkdir(captureDir);
 
@@ -41,15 +41,21 @@ function delay(time) {
 
 (async () => {
     const browser = await puppeteer.launch({
-      headless: process.env.CI !== undefined,
+      headless:
+        process.argv.slice(2)[1] !== undefined &&
+        process.argv.slice(2)[1] === '--headless',
       defaultViewport: {
         width: ${Global.option.viewportWidth},
         height: ${Global.option.viewportHeight}
       },
-      args: ['--start-maximized']
+      args: ['--start-maximized', '--lang=en-US']
     });
     const page = await browser.newPage();
-      try {
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'en-US',
+    });
+
+    try {
       const extensions = require('puppeteer-extensions')(page);
       extensions.turnOffAnimations();
     } catch (e) {
