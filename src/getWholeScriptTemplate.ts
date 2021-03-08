@@ -50,7 +50,16 @@ function delay(time) {
       },
       args: ['--start-maximized', '--lang=en-US']
     });
+
     const page = await browser.newPage();
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'language', {
+        get: () => 'en-US',
+      });
+      Object.defineProperty(navigator, 'languages', {
+        get: () => ['en-US', 'en'],
+      });
+    });
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US',
     });
