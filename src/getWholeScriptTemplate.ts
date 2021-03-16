@@ -40,6 +40,7 @@ function delay(time) {
 }
 
 (async () => {
+  try {
     const browser = await puppeteer.launch({
       headless:
         process.argv.slice(2)[1] !== undefined &&
@@ -50,7 +51,7 @@ function delay(time) {
       },
       args: ['--start-maximized', '--lang=en-US']
     });
-
+  
     const page = await browser.newPage();
     await page.evaluateOnNewDocument(() => {
       Object.defineProperty(navigator, 'language', {
@@ -63,7 +64,7 @@ function delay(time) {
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US',
     });
-
+  
     try {
       const extensions = require('puppeteer-extensions')(page);
       extensions.turnOffAnimations();
@@ -79,12 +80,16 @@ function delay(time) {
       console.info(msg);
     }
     let element, formElement, tabs;
-
+  
 ${getAuthExecutorTemplate()}
-
+  
 ${commandTemplate}
-
+  
     await browser.close();
+  } catch(e) {
+    console.error(e);
+    process.exit(1);
+  }
 })();
 `;
 }
