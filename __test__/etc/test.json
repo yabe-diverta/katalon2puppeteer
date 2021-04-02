@@ -1,0 +1,22 @@
+[
+    {
+        "command": "open",
+        "target": "http://test.example.com:8080/",
+        "value": ""
+    },
+    {
+        "command": "click",
+        "target": "link=link1",
+        "value": "bin"
+    },
+    {
+        "command": "click",
+        "target": "//img[@alt='image']",
+        "value": ""
+    },
+    {
+        "command": "click",
+        "target": "//p[2]/span",
+        "value": ""
+    }
+]

@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot main transpilation will match snapshot 1`] = `
+"
+const fs = require('fs')
+const puppeteer = require('puppeteer');
+
+function mkdir(dirName) {
+  if (!fs.existsSync(dirName)){
+    fs.mkdirSync(dirName);
+  }
+}
+const captureDir = process.argv.slice(2)[0] !== undefined
+  ? process.argv.slice(2)[0]
+  : '__test__/etc/capture';
+mkdir(captureDir);
+
+function delay(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+(async () => {
+  try {
+    const browser = await puppeteer.launch({
+      headless:
+        process.argv.slice(2)[1] !== undefined &&
+        process.argv.slice(2)[1] === '--headless',
+      defaultViewport: {
+        width: 1920,
+        height: 1080
+      },
+      args: ['--start-maximized', '--lang=en-US']
+    });
+  
+    const page = await browser.newPage();
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'language', {
+        get: () => 'en-US',
+      });
+      Object.defineProperty(navigator, 'languages', {
+        get: () => ['en-US', 'en'],
+      });
+    });
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'en-US',
+    });
+  
+    try {
+      const extensions = require('puppeteer-extensions')(page);
+      extensions.turnOffAnimations();
+    } catch (e) {
+      const msg = \`
+      \\\\x1b[33mpuppeteer-extensions would work better for your e2e testing,
+      see https://github.com/HuddleEng/puppeteer-extensions#miscellaneous
+      \\\\x1b[0m\${e}
+      \`
+        .split('\\\\n')
+        .map((line) => line.trim())
+        .join('\\\\n');
+      console.info(msg);
+    }
+    let element, formElement, tabs;
+  
+
+  await page.authenticate({
+    username: 'userId',
+    password: 'password',
+  });
+  
+	await page.goto(\\"http://test.example.com:8080/\\", { waitUntil: 'networkidle0' });
+	await delay(500)
+	await page.screenshot({
+	path: \`\${captureDir}\${require('path').sep}test.json_000_command%3Dopen%2Ctarget%3Dhttp%3A%2F%2Ftest.example.com%3A8080%2F%2Cvalue%3D.png\`,
+	type: 'png',
+	fullPage: true
+	});
+	console.log('puppeteer executed at no.0')
+
+	await page.waitForXPath(\\"//a[contains(text(),'link1')]\\")
+	element = await page.$x(\\"//a[contains(text(),'link1')]\\");
+	await element[0].click().catch(async (e) => await page.evaluate((elm) => { elm.click(); }, element[0]))
+	await page.waitForNavigation();
+	await delay(500)
+	await page.screenshot({
+	path: \`\${captureDir}\${require('path').sep}test.json_001_command%3Dclick%2Ctarget%3Dlink%3Dlink1%2Cvalue%3Dbin.png\`,
+	type: 'png',
+	fullPage: true
+	});
+	console.log('puppeteer executed at no.1')
+
+	await page.waitForXPath(\\"//img[@alt='image']\\")
+	element = await page.$x(\\"//img[@alt='image']\\");
+	await element[0].click().catch(async (e) => await page.evaluate((elm) => { elm.click(); }, element[0]))
+	await delay(500)
+	await page.screenshot({
+	path: \`\${captureDir}\${require('path').sep}test.json_002_command%3Dclick%2Ctarget%3D%2F%2Fimg%5B%40alt%3D'image'%5D%2Cvalue%3D.png\`,
+	type: 'png',
+	fullPage: true
+	});
+	console.log('puppeteer executed at no.2')
+
+	await page.waitForXPath(\\"//p[2]/span\\")
+	element = await page.$x(\\"//p[2]/span\\");
+	await element[0].click().catch(async (e) => await page.evaluate((elm) => { elm.click(); }, element[0]))
+	await delay(500)
+	await page.screenshot({
+	path: \`\${captureDir}\${require('path').sep}test.json_003_command%3Dclick%2Ctarget%3D%2F%2Fp%5B2%5D%2Fspan%2Cvalue%3D.png\`,
+	type: 'png',
+	fullPage: true
+	});
+	console.log('puppeteer executed at no.3')
+  
+    await browser.close();
+  } catch(e) {
+    console.error(e);
+    process.exit(1);
+  }
+})();
+"
+`;
