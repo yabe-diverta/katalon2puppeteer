@@ -4,7 +4,7 @@ transpiles json expoeted by katalon web recorder to node script using puppeteer.
 
 ## installation
 
-`npm i katalon2puppeteer`
+`npm i katalon2puppeteer -g`
 
 ## Useage
 
