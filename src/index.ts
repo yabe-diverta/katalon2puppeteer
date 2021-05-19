@@ -1,23 +1,18 @@
-import fs from 'fs';
+import './ext';
 import glob from 'glob';
-import mkdirp from 'mkdirp';
-import path from 'path';
-import './extensions';
-import { getWholeScriptTemplate } from './getWholeScriptTemplate';
-import { getCommandTemplate } from './getCommandTemplate';
-import { Global } from './global';
-import { CommandOption, PuppeteerJson } from './type';
+import { copyStaticTemplates } from './copyStaticTemplates';
+import { createNewDir } from './createNewDir';
+import { TaskBuilder } from './TaskBuilder';
+import { CommandOption } from './type';
 
 export function create(option: CommandOption) {
-  Global.option = option;
-  Global.JSONs = glob.sync(option.input);
-
-  Global.JSONs.map((p) => require(path.join(process.cwd(), p)) as PuppeteerJson)
-    .map(getCommandTemplate)
-    .map(getWholeScriptTemplate)
-    .forEach((res, idx) => {
-      const filePath = Global.JSONs[idx].replace(/\.json$/gi, '.e2e.test.js');
-      mkdirp.sync(path.dirname(filePath));
-      fs.writeFileSync(filePath, res, { encoding: 'utf8' });
-    });
+  glob.sync(option.input).forEach((jsonPath) => {
+    const newDirPath = createNewDir(jsonPath);
+    copyStaticTemplates(newDirPath);
+    new TaskBuilder()
+      .init(jsonPath, newDirPath)
+      .createTaskFileDefinitions()
+      .createIndexJsDefinition(option)
+      .writeFiles()
+  });
 }

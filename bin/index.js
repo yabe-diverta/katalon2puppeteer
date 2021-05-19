@@ -18,14 +18,11 @@ program
     '-i, --input <value>',
     "path for JSON files (requires enclosing with single quotation when you use glob, e.g. './test/**/*.json')."
   )
-  .option('--basicAuth <username>:<password>', 'BASIC authentication info.')
   .option(
     '--delay <ms>',
     'number that specifies dalaying after each operation executed.',
     0
   )
-  .option('--viewportWidth <width>', 'viewport width.', 1920)
-  .option('--viewportHeight <height>', 'viewport height.', 1080)
   .parse(process.argv);
 
 const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
