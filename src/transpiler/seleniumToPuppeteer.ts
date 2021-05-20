@@ -10,11 +10,26 @@ export const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
   doubleclick: (x) => `
         await page.waitForXPath("${x.selector}");
         element = await page.$x("${x.selector}");
-        await Promise.all([element[0].click({ clickCount: 2 }), page.waitTillHTMLRendered()]);`,
+        // force double click even if the element is not visible.
+        const dbclick = element[0].click({ clickCount: 2 }).catch(async (e) =>
+            await page.evaluate((elm) => {
+                const event = new MouseEvent('dblclick', {
+                    'view': window,
+                    'bubbles': true,
+                    'cancelable': true
+                });
+                elm.dispatchEvent(event);
+            }, element[0])
+        );
+        await Promise.all([dbclick, page.waitTillHTMLRendered()]);`,
   click: (x) => `
         await page.waitForXPath("${x.selector}");
         element = await page.$x("${x.selector}");
-        await Promise.all([element[0].click(), page.waitTillHTMLRendered()]);`,
+        // force click even if the element is not visible.
+        const click = element[0].click().catch(async (e) =>
+            await page.evaluate((elm) => elm.click(), element[0])
+        );
+        await Promise.all([click, page.waitTillHTMLRendered()]);`,
   store: (x) => `
         await let ${x.selector} = ${x.value};`,
   type: (x) => `
