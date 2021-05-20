@@ -1,3 +1,4 @@
+const path = require('path');
 const applyExtensions = require('./ext');
 
 class Executor {
@@ -46,10 +47,9 @@ class Executor {
       }
 
       if (!behaviorFlag.disableScreenshot) {
+        const currentDir = path.dirname(__filename).split(path.sep).pop();
         await this.page.screenshot({
-          path: `${this.captureDir}${
-            require('path').sep
-          }capture.${idx}.${promiseFactoryName}.png`,
+          path: `${this.captureDir}${path.sep}capture.${currentDir}.${idx}.${promiseFactoryName}.png`,
           type: 'png',
           fullPage: true,
         });
