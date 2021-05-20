@@ -10,11 +10,11 @@ export const seleniumToPuppeteer: { [cmd: string]: (x: any) => string } = {
   doubleclick: (x) => `
         await page.waitForXPath("${x.selector}");
         element = await page.$x("${x.selector}");
-        await Promise.all([await element[0].click({ clickCount: 2 }), page.waitTillHTMLRendered()]);`,
+        await Promise.all([element[0].click({ clickCount: 2 }), page.waitTillHTMLRendered()]);`,
   click: (x) => `
         await page.waitForXPath("${x.selector}");
         element = await page.$x("${x.selector}");
-        await Promise.all([await element[0].click(), page.waitTillHTMLRendered()]);`,
+        await Promise.all([element[0].click(), page.waitTillHTMLRendered()]);`,
   store: (x) => `
         await let ${x.selector} = ${x.value};`,
   type: (x) => `
