@@ -1,6 +1,6 @@
 {
   "name": "katalon2puppeteer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a tiny script transpiles json exported by Katalon web recorder to puppeteer script.",
   "scripts": {
     "build": "ncc build src/index.ts --source-map --license licenses.txt",
