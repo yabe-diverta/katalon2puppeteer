@@ -1,12 +1,11 @@
 {
   "name": "katalon2puppeteer",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "a tiny script transpiles json exported by Katalon web recorder to puppeteer script.",
   "scripts": {
     "build": "ncc build src/index.ts --source-map --license licenses.txt",
     "prepublish": "npm run build && npm run test",
-    "test": "jest",
-    "postinstall": "enforcing-convensional-commit"
+    "test": "jest"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -49,7 +48,7 @@
     "@types/puppeteer": "^5.4.2",
     "@types/rimraf": "^3.0.0",
     "@vercel/ncc": "^0.27.0",
-    "enforcing-convensional-commit": "^1.0.11",
+    "enforcing-convensional-commit": "^1.0.19",
     "jest": "^26.6.3",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
