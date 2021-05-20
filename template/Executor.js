@@ -23,15 +23,20 @@ class Executor {
       promiseFactoryName,
       promiseFactory,
       this.promiseFactories.length,
-      wailtMilliSecond,
+      wailtMilliSecond
     );
     this.promiseFactories.push(pf);
     return this;
   }
 
-  decoratePromiseFactory(promiseFactoryName, promiseFactory, idx, wailtMilliSecond) {
+  decoratePromiseFactory(
+    promiseFactoryName,
+    promiseFactory,
+    idx,
+    wailtMilliSecond
+  ) {
     return async () => {
-      const behaviorFlag = await promiseFactory({ ...this });
+      const behaviorFlag = (await promiseFactory({ ...this })) || {};
 
       if (!behaviorFlag.disableDelay) {
         const delay = (time = 0) => {
@@ -42,7 +47,9 @@ class Executor {
 
       if (!behaviorFlag.disableScreenshot) {
         await this.page.screenshot({
-          path: `${this.captureDir}${require('path').sep}capture.${idx}.${promiseFactoryName}.png`,
+          path: `${this.captureDir}${
+            require('path').sep
+          }capture.${idx}.${promiseFactoryName}.png`,
           type: 'png',
           fullPage: true,
         });
