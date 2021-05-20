@@ -30,18 +30,24 @@ class Executor {
   }
 
   decoratePromiseFactory(promiseFactoryName, promiseFactory, idx, wailtMilliSecond) {
-    const delay = (time = 0) => {
-      return new Promise((resolve) => setTimeout(resolve, time));
-    };
-
     return async () => {
-      await promiseFactory({ ...this });
-      await delay(wailtMilliSecond);
-      await this.page.screenshot({
-        path: `${this.captureDir}${require('path').sep}capture.${idx}.${promiseFactoryName}.png`,
-        type: 'png',
-        fullPage: true,
-      });
+      const behaviorFlag = await promiseFactory({ ...this });
+
+      if (!behaviorFlag.disableDelay) {
+        const delay = (time = 0) => {
+          return new Promise((resolve) => setTimeout(resolve, time));
+        };
+        await delay(wailtMilliSecond);
+      }
+
+      if (!behaviorFlag.disableScreenshot) {
+        await this.page.screenshot({
+          path: `${this.captureDir}${require('path').sep}capture.${idx}.${promiseFactoryName}.png`,
+          type: 'png',
+          fullPage: true,
+        });
+      }
+
       console.dir(`promise no.${idx} ${promiseFactoryName} was executed.`);
     };
   }
