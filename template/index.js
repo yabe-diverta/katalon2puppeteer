@@ -6,7 +6,7 @@ const args = process.argv.slice(2);
 const options = {
   newCapture: args.includes('--newcapture'),
   headless: args.includes('--headless'),
-  basicAuth: args.includes('--basicAuth'),
+  basicAuth: args.some(opt => /^--basicAuth=\S+:\S+$/.test(opt)),
   hasHelp: args.includes('-h') || args.includes('--help'),
 };
 
@@ -19,7 +19,7 @@ if (options.hasHelp) {
       node \${CURRENT DIR}  # will run puppeteer and stores result captures into \$../{CURRENT DIR}/capture
       node \${CURRENT DIR} --headless  # will run puppeteer in headless mode
       node \${CURRENT DIR} --newcapture # will run puppeteer and stores result captures into \$../{CURRENT DIR}/newcapture
-      node \${CURRENT DIR} --basicAuth user:password # will request authentication with basic auth
+      node \${CURRENT DIR} --basicAuth=user:password # will request authentication with basic auth
 
   `)
   return;
