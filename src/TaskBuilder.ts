@@ -1,9 +1,10 @@
-import path from 'path';
-import transpile from './transpiler';
-import { CommandOption, PuppeteerJson, PuppeteerJsonObj } from './type';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
+import path from 'path';
 import prettier from 'prettier';
+import { absolutePath } from './path2abolutePath';
+import transpile from './transpiler';
+import { CommandOption, PuppeteerJson, PuppeteerJsonObj } from './type';
 
 const prettierConfig = {
   parser: 'babel',
@@ -25,8 +26,7 @@ export class TaskBuilder {
 
   init(jsonPath: string, newDirPath: string) {
     this.newDirPath = newDirPath;
-    const p = path.isAbsolute(jsonPath) ? jsonPath : path.resolve(process.cwd(), jsonPath);
-    this.puppeteerJson = require(p) as PuppeteerJson;
+    this.puppeteerJson = require(absolutePath(jsonPath)) as PuppeteerJson;
     return this;
   }
 

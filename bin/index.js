@@ -5,30 +5,36 @@
 const path = require('path');
 const pkg = require(path.resolve(__dirname, '..', 'package.json'));
 
+const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
+
 /**
  * Module dependencies.
  */
 const program = require('commander');
 
+const jsonPaths = [];
 program
-  .name('katalon-json-to-puppetter-transpiler')
-  .usage('[options]')
+  .name(Object.keys(pkg.bin)[0])
   .version(pkg.version)
-  .requiredOption(
-    '-i, --input <value>',
-    "path for JSON files (requires enclosing with single quotation when you use glob, e.g. './test/**/*.json')."
-  )
+  .usage('test/e2e/*.json [options]')
   .option(
     '--delay <ms>',
     'number that specifies dalaying after each operation executed.',
     0
   )
-  .parse(process.argv);
-
-const Transpiler = require(path.resolve(__dirname, '../dist/index.js'));
+  .arguments('<jsonFilesPath>')
+  .description(pkg.description, {
+    jsonFilesPath: 'katalon json files path (blob)',
+  })
+  .action(() => {
+    const args = process.argv.slice(2);
+    const optionsIdx = args.findIndex((v) => /^-/.test(v));
+    const pths = optionsIdx === -1 ? args : args.slice(0, optionsIdx);
+    pths.forEach((p) => jsonPaths.push(p));
+  })
+  .parse();
 
 if (Transpiler) {
-  const options = program.opts();
-  Transpiler.create(options);
+  Transpiler.create(jsonPaths, program.opts());
   process.exit(0);
 }
