@@ -25,10 +25,8 @@ export class TaskBuilder {
 
   init(jsonPath: string, newDirPath: string) {
     this.newDirPath = newDirPath;
-    this.puppeteerJson = require(path.join(
-      process.cwd(),
-      jsonPath
-    )) as PuppeteerJson;
+    const p = path.isAbsolute(jsonPath) ? jsonPath : path.resolve(process.cwd(), jsonPath);
+    this.puppeteerJson = require(p) as PuppeteerJson;
     return this;
   }
 
