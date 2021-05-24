@@ -2,6 +2,10 @@
 
 transpiles json expoeted by katalon web recorder to node script using puppeteer.
 
+## Turorial
+
+Please take a look [a complete tutorial guide](https://yabe-diverta.github.io/katalon2puppeteer/) to get to know how this tool works.
+
 ## installation
 
 `npm i katalon2puppeteer -g`

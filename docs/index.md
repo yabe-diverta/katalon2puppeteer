@@ -1,4 +1,4 @@
-# Turorial for visual e2e screen shot testing.
+# Turorial for visual e2e screen shot testing
 
 ## Motivation
 
@@ -23,48 +23,92 @@ We'll introduce how maintain your application by visual regression e2e testing w
 If you don't have yarn in your laptop, please run following comand:  
 `npm install --global yarn`
 
+## Shortcuts
+
+We'll review below.
+```sh
+# run local server for your application in advance if it's supposed to be executed in your local
+# record your manipulations through katalon web recorder, then dump it to ~/Download/ExampleTest.json
+
+# move files
+mkdir -p test/e2e
+mv ~/Downloads/ExampleTest.json test/e2e
+
+# install dependencies
+npm install puppeteer # install puppeteer module as a dependency of repo
+npm install katalon2puppeteer@latest -g # install katalon2puppeteer module globally
+
+# generate test code
+k2p test/e2e/ExampleTest.json
+
+# run test
+node test/e2e/ExampleTest/index.js
+
+# push the result
+git add .
+git commit -m "test: add test resources"
+git push
+
+# install GithubActions workflows
+mkdir -p ./.github/workflows
+curl -s https://raw.githubusercontent.com/yabe-diverta/katalon2puppeteer/main/docs/misc/screen.yaml -o ./.github/workflows/screen.yaml
+curl -s https://raw.githubusercontent.com/yabe-diverta/katalon2puppeteer/main/docs/misc/update-screen.yaml -o ./.github/workflows/update-screen.yaml
+
+# push the workflows 
+git add ./.github
+git commit -m "test: add an updater of screen captures"
+git push
+
+# GithubActions in Github,
+# dispatch "visual regression e2e testing for management screen" workflow
+```
+
 ## Clone front-end into your workspace
 
-Before stating this tutorial,  
-you have to provide the real-world example application at first for testing.
+Before starting this tutorial,  
+you have to provide a real-world example application at first.
 
-Please folk a [public example (using nuxt)](https://github.com/devJang/nuxt-realworld).  
+Please folk the [public example (using nuxt)](https://github.com/devJang/nuxt-realworld).  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/97a97eed78fc45ee49c5d5bac0925721.png)](https://diverta.gyazo.com/97a97eed78fc45ee49c5d5bac0925721)
 
-Once folked the repository,  
-copy the clone command.  
+Once folked the repo,  
+copy the path.  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/e8c4c66742dfa225eefbf10c50fd8656.png)](https://diverta.gyazo.com/e8c4c66742dfa225eefbf10c50fd8656)
 
-Open your terminal window, clone a public example.  
+Open your terminal window, clone it.  
 ```sh
-git clonse COPIED_VALUE
+git clone COPIED_VALUE
 ```
 
 Then, initialize it.
 ```sh
 cd nuxt-realworld
-yarn install  # <- here would take a few minutes
-yarn dev
+yarn install  # <- here would take a few minutes.
+npx npm-add-script -k serve -v "nuxt-ts build && nuxt start" # <- add static serve command to avoid initial loading screen.
+npm run serve
 ```
 
-After waited for a while,  
-you would notice some messages in your console.  
+After waiting for a while,  
+you notice some messages are displayed in your console.  
 ```sh
 
-✔ Client
-  Compiled successfully in 10.32s
-
-✔ Server
-  Compiled successfully in 10.35s
-
-ℹ Waiting for file changes00:04:14
-ℹ Memory usage: 235 MB (RSS: 377 MB)
-ℹ Listening on: http://localhost:3000/
-No issues found.
+   ╭────────────────────────────────────────╮
+   │                                        │
+   │   Nuxt @ v2.14.12                      │
+   │                                        │
+   │   ▸ Environment: production            │
+   │   ▸ Rendering:   server-side           │
+   │   ▸ Target:      server                │
+   │                                        │
+   │   Memory usage: 29.1 MB (RSS: 82 MB)   │
+   │                                        │
+   │   Listening: http://localhost:3000/    │
+   │                                        │
+   ╰────────────────────────────────────────╯
 
 ```
 
-open your application located in your local by Chrome.  
+open your application by Chrome.  
 `open http://localhost:3000`
 
 Anyhow now you have your own application.  
@@ -74,12 +118,12 @@ Let's move on to the next to do testing.
 
 Install [Katalon Recorder](https://chrome.google.com/webstore/detail/katalon-recorder-selenium/ljdobmomdgdljniojadhoplhkpialdid) extension in your Chrome.
 
-Then open `chrome://extensions/` in your Chrome.  
-You would find the extension installed (toggle to turn on the extension if it's disabled).
+Open `chrome://extensions/` in your Chrome.  
+(toggle to turn on the extension if it's disabled).
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/02feaf5b3c0a7cef65ce8d0b3f09ca8e.png)](https://diverta.gyazo.com/02feaf5b3c0a7cef65ce8d0b3f09ca8e)
 
 Check the upper right side in your Chrome,  
-you can find an extension logo icon.  
+you can find the logo icon of the extension.  
 Click the icon.  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/636623b4a38f9a1b54c73799e28a3175.png)](https://diverta.gyazo.com/636623b4a38f9a1b54c73799e28a3175)
 
@@ -123,14 +167,14 @@ Then export as a JSON named `"ExampleTest.json"` to your `~/Download` directory.
 OK, you've finished to make a resource for testing,  
 Let's proceed to the next to generate an executable testing scripts.
 
-## Generate JS testing files.
+## Generate JS testing files
 
 > :warning: If your OS is not macos, don't do this section (please take a look here to know how it works as a reference).  
 > Please checkout [tips](#question-i-dont-use-macos) instead.
 
 Open another terminal window, change directory there.  
 Continue in an another terminal apart from the old one.  
-(I believe `yarn dev` process keeps running there).
+(I believe `npm run serve` process keeps running there).
 ```sh
 cd nuxt-realworld
 pwd
@@ -146,7 +190,7 @@ mv ~/Downloads/ExampleTest.json test/e2e
 
 Next, install a tool by the following command.  
 ```sh
-npm install puppeteer # install puppeteer module as a dependency of repository
+npm install puppeteer # install puppeteer module as a dependency of repo
 npm install katalon2puppeteer@latest -g # install katalon2puppeteer module globally
 ```
 
@@ -177,15 +221,15 @@ Finally, kick it.
 `node test/e2e/ExampleTest/index.js`
 
 Magic happens.  
-Your Chrome automatically opens and does manipulations you've recorded one by one.  
+Your Chrome automatically opens and plays manipulations one by one.  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/29b33272c5731d74732dc7d4be89d288.gif)](https://diverta.gyazo.com/29b33272c5731d74732dc7d4be89d288)
 
-> :warning: An error happens?
-> Is that `Error: net::ERR_CONNECTION_REFUSED at http://localhost:3000/`?
-> Could you confirm you're running local server with the command `npm run dev`
+> :warning: An error happens initially?  
+> Is that `Error: net::ERR_CONNECTION_REFUSED at http://localhost:3000/`?  
+> Could you confirm you're running local server with the command `npm run serve`?
 
-> :warning: Your test failed by execution timeout?
-> Unfortunately, it's an error you need to adjust some codes.
+> :warning: Your test failed by execution timeout?  
+> Unfortunately, it's an error you need to adjust some codes.  
 > Please checkout [Advanced](#Advanced) section.
 
 After a wile,  
@@ -199,7 +243,7 @@ your test will be done and output message (unless the test does not fail).
 'all promises are executed.'    # <- your test finishes here.
 ```
 
-So what?
+So what?  
 You can check each actions in your resource JSON dumps screen captures into `test/e2e/capture`.  
 Please type below to confirm it.  
 ```sh
@@ -220,7 +264,7 @@ open test/e2e/capture/capture.ExampleTest.0.open.0.png
 Do you realize that the test took screen captures and stored in your PJ?
 
 Well done!  
-Now your test is made, Let's continue to the next.
+Now your initial test is compete, Let's continue to the next.
 
 ### Bonus
 
@@ -230,8 +274,8 @@ For instance for my test case,
 i made a simple test including only 4 actions (manipulations).  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/cca7381189d72719cd79b39037f01df7.png)](https://diverta.gyazo.com/cca7381189d72719cd79b39037f01df7)
 
-I exported that as a resource JSON file as the same way as you did,  
-the JSON has 4 elements in it's data.  
+I exported this as a resource JSON file as the same way as you did,  
+the JSON had 4 elements in it's data.  
 ```sh
 ~/w/nuxt-realworld ❯❯❯ cat test/e2e/ExampleTest.json
 [
@@ -274,7 +318,7 @@ Which means, `k2p` extracts each actions in your JSON to a single task file one 
 Each task files are summalized in `index.js` file as a list,  
 the main process in the test will execute the list in order.  
 ```sh
-~/w/nuxt-realworld ❯❯❯ cat test/e2e/ExampleTest/task/index.js                                                                                                             ✘ 130 
+~/w/nuxt-realworld ❯❯❯ cat test/e2e/ExampleTest/task/index.js
 const fs = require('fs')
 const path = require('path')
 
@@ -292,8 +336,8 @@ module.exports = tasks
 ```
 
 Plus, when the task is done successfully,  
-outputs a message like `'promise no.0 open.0 was executed.'` in your terminal,  
-exports a screen capture into `src/test/capture`.  
+outputs messages like `'promise no.0 open.0 was executed.'` in your terminal,  
+exports screen captures into `src/test/capture`.  
 (If `src/test/capture` is not existed, the test makes the directory implicity).
 
 ## Setup CI.
@@ -308,35 +352,17 @@ git push
 OK, you've done all of your test before actual assertions.  
 Set up CI (GithubActions) for daily testing.
 
-### GithubActions: assert the latest screen captures.
+You can see the [my example repo](https://github.com/yabe-diverta/nuxt-realworld/actions) when you lost a way.
 
-You did to run a test and taking screen captures above,  
-fortunatelly it's executable in CI of course.
+### GithubActions: assert the latest screen captures
 
-it's a better way if you:
-- don't have macos.
-- are often bothering to update screen captures in your local because the screens are frequently updated.
-
-First, install a yaml to your PJ.  
+Install a yaml to your PJ.
 ```sh
 mkdir -p ./.github/workflows
 curl -s https://raw.githubusercontent.com/yabe-diverta/katalon2puppeteer/main/docs/misc/screen.yaml -o ./.github/workflows/screen.yaml
 ```
 
-Second, adjust some lines `screen.yaml` for your PJ.
-```yaml
-...
-      - name: e2e
-        id: e2e-sequential-puppeteer-action
-        uses: yabe-diverta/e2e-sequential-puppeteer-action@v2
-        with:
-          serve_cmd: npm run dev  # <- remove this line if your want to test public website.
-          wait_on: http://localhost:3000  # <- change this value where your website is served at.
-          scripts_dir: test/e2e # <- change this value depending on where your test files exists.
-...
-```
-
-Finally, commit & update.
+Next, commit & update.
 ```sh
 git add ./.github
 git commit -m "test: add tester"
@@ -349,7 +375,7 @@ Now you can find the workflow created in your Github repo website.
 Dispatch it manually.  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/4cb12d66476eaac84c966d2332716f48.png)](https://diverta.gyazo.com/4cb12d66476eaac84c966d2332716f48)
 
-After a while it's done,  
+After a while,  
 you can find an artifact either the test is scceeded or not.  
 Please download it, uzip it, and open it by Chrome.
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/d7e0af281826e4457ae8b8b322f1e979.png)](https://diverta.gyazo.com/d7e0af281826e4457ae8b8b322f1e979)
@@ -381,8 +407,8 @@ Please refere to [slack-notify](https://github.com/marketplace/actions/slack-not
 
 ### GithubActions: taking fresh screens.
 
-You did to run a test and taking screen captures above,  
-fortunatelly it's executable in CI of course.
+You've run a initial test to compile screen captures in your local,  
+fortunately this workaround is executable on CI.
 
 it's a better way if you:
 - don't have macos.
@@ -394,20 +420,7 @@ mkdir -p ./.github/workflows
 curl -s https://raw.githubusercontent.com/yabe-diverta/katalon2puppeteer/main/docs/misc/update-screen.yaml -o ./.github/workflows/update-screen.yaml
 ```
 
-Second, adjust some lines `update-screen.yaml` for your PJ.
-```yaml
-...
-      - name: e2e
-        id: e2e-sequential-puppeteer-action
-        uses: yabe-diverta/e2e-sequential-puppeteer-action@v2
-        with:
-          serve_cmd: npm run dev  # <- remove this line if your want to test public website.
-          wait_on: http://localhost:3000  # <- change this value where your website is served at.
-          scripts_dir: test/e2e # <- change this value depending on where your test files exists.
-...
-```
-
-Finally, commit & update.
+Next, commit & update.
 ```sh
 git add ./.github
 git commit -m "test: add an updater of screen captures"
@@ -417,23 +430,21 @@ git push
 Now you can find the workflow created in your Github repo website,  
 dispatch it manually.
 
-After a while it's done,  
-you can find an pull request created by the workflow.  
-Please marge it.
+After a while,  
+the workflow makes a new pull request to your repo.  
+Please confirm and marge it.
 
-OK, the workflow updated your PJ to add screen captures.  
-confirm it by pulling the latest. 
-```sh
-git pull
-ls -la test/e2e/capture # <- will show screen captures.
-```
+OK, that's it.
+You can refresh screen captures by hitting the dispatch button as you required.
 
 ## Wrapping up
 
-You have your own testing way.  
+You own visual regression e2e testing in your repo.  
+
+Exported codes are plain JS using Node.js,
 you can customize the code freely.
 
-If the template `k2p` generated has issues,  
+When you find an issue while `k2p` generates code,  
 please post it to [the repo](https://github.com/yabe-diverta/katalon2puppeteer/issues).
 
 ---

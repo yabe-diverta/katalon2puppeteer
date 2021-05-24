@@ -31,7 +31,7 @@ jobs:
         id: e2e-sequential-puppeteer-action
         uses: yabe-diverta/e2e-sequential-puppeteer-action@v2
         with:
-          serve_cmd: npm run dev  # <- remove this line if your want to test public website.
+          serve_cmd: npm run serve  # <- remove this line if your want to test public website.
           wait_on: http://localhost:3000  # <- change this value where your website is served at.
           scripts_dir: test/e2e # <- change this value depending on where your test files exists.
       - name: reg-cli
