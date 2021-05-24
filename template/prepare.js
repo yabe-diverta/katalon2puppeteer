@@ -1,8 +1,13 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
-const { option } = require('commander');
 
+/**
+ * Sets puppeteer up and launch.
+ *
+ * @param {*} option
+ * @returns { captureDir, browser, page }
+ */
 async function prepare({ newCapture, headless, basicAuth }) {
   const captureDir = path.resolve(
     __dirname,
@@ -17,6 +22,7 @@ async function prepare({ newCapture, headless, basicAuth }) {
       width: 1920,
       height: 1080,
     },
+    ignoreHTTPSErrors: true,
     args: ['--start-maximized', '--lang=en-US'],
   });
 
@@ -34,6 +40,8 @@ async function prepare({ newCapture, headless, basicAuth }) {
     await page.authenticate({ username, password });
   }
 
+  await abortPollingConections(page);
+
   await page.evaluateOnNewDocument(() => {
     Object.defineProperty(navigator, 'language', {
       get: () => 'en-US',
@@ -48,4 +56,44 @@ async function prepare({ newCapture, headless, basicAuth }) {
 
   return { captureDir, browser, page };
 }
+
+/**
+ * Adds an event listener to terminate pollig connections.
+ *
+ * @param {*} page
+ * @see https://github.com/puppeteer/puppeteer/issues/3471
+ */
+async function abortPollingConections(page) {
+  await page.setRequestInterception(true);
+
+  const blockedResources = [
+    'quantserve',
+    'adzerk',
+    'doubleclick',
+    'adition',
+    'exelator',
+    'sharethrough',
+    'twitter',
+    'google-analytics',
+    'fontawesome',
+    'facebook',
+    'analytics',
+    'optimizely',
+    'clicktale',
+    'mixpanel',
+    'zedo',
+    'clicksor',
+    'tiqcdn',
+    'googlesyndication',
+    '__webpack_hmr',
+    '_loading/sse',
+  ];
+
+  page.on('request', (req) =>
+    blockedResources.some((b) => req.url().includes(b))
+      ? req.abort()
+      : req.continue()
+  );
+}
+
 module.exports = prepare;
