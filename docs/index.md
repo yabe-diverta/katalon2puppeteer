@@ -1,6 +1,8 @@
 # Turorial for visual e2e screen shot testing
 
-## Motivation
+> This document is for making visual e2e screen shot testing with GithubActions with a tool [katalon2puppeteer](https://www.npmjs.com/package/katalon2puppeteer)
+
+# Motivation
 
 While developping and providing vary applications,  
 you would realize it's really hard to know either the apps are working expectedly now.
@@ -13,7 +15,7 @@ To prevent it, you should prepare some tests, and make them run regularly.
 
 We'll introduce how maintain your application by visual regression e2e testing with the tool [katalon2puppeteer](https://www.npmjs.com/package/katalon2puppeteer).
 
-## Prerequisites
+# Prerequisites
 
 - chrome
 - git
@@ -23,7 +25,7 @@ We'll introduce how maintain your application by visual regression e2e testing w
 If you don't have yarn in your laptop, please run following comand:  
 `npm install --global yarn`
 
-## Shortcuts
+# Shortcuts
 
 We'll review below.
 ```sh
@@ -63,7 +65,7 @@ git push
 # dispatch "visual regression e2e testing for management screen" workflow
 ```
 
-## Clone front-end into your workspace
+# Clone front-end into your workspace
 
 Before starting this tutorial,  
 you have to provide a real-world example application at first.
@@ -114,7 +116,7 @@ open your application by Chrome.
 Anyhow now you have your own application.  
 Let's move on to the next to do testing.
 
-## Record your manipulations
+# Record your manipulations
 
 Install [Katalon Recorder](https://chrome.google.com/webstore/detail/katalon-recorder-selenium/ljdobmomdgdljniojadhoplhkpialdid) extension in your Chrome.
 
@@ -167,7 +169,7 @@ Then export as a JSON named `"ExampleTest.json"` to your `~/Download` directory.
 OK, you've finished to make a resource for testing,  
 Let's proceed to the next to generate an executable testing scripts.
 
-## Generate JS testing files
+# Generate JS testing files
 
 > :warning: If your OS is not macos, don't do this section (please take a look here to know how it works as a reference).  
 > Please checkout [tips](#question-i-dont-use-macos) instead.
@@ -266,7 +268,7 @@ Do you realize that the test took screen captures and stored in your PJ?
 Well done!  
 Now your initial test is compete, Let's continue to the next.
 
-### Bonus
+## Bonus
 
 Let me explain a little bit if you want to know details.
 
@@ -340,7 +342,7 @@ outputs messages like `'promise no.0 open.0 was executed.'` in your terminal,
 exports screen captures into `src/test/capture`.  
 (If `src/test/capture` is not existed, the test makes the directory implicity).
 
-## Setup CI.
+# Setup CI.
 
 Push your files to Github before proceed this section:  
 ```sh
@@ -354,7 +356,7 @@ Set up CI (GithubActions) for daily testing.
 
 You can see the [my example repo](https://github.com/yabe-diverta/nuxt-realworld/actions) when you lost a way.
 
-### GithubActions: assert the latest screen captures
+## GithubActions: assert the latest screen captures
 
 Install a yaml to your PJ.
 ```sh
@@ -398,14 +400,14 @@ in the head part of the workflow,
 defined regular execution written as cron command,  
 thus this test will be dispatched every day.
 
-#### Bonus
+### Bonus
 
 You can even have notifications when the test are failed.  
 Please checkout commented out lines in `screen.yml`,  
 and setup notification with Webhook.  
 Please refere to [slack-notify](https://github.com/marketplace/actions/slack-notify) GithubActions app.
 
-### GithubActions: taking fresh screens.
+## GithubActions: taking fresh screens.
 
 You've run a initial test to compile screen captures in your local,  
 fortunately this workaround is executable on CI.
@@ -437,7 +439,7 @@ Please confirm and marge it.
 OK, that's it.
 You can refresh screen captures by hitting the dispatch button as you required.
 
-## Wrapping up
+# Wrapping up
 
 You own visual regression e2e testing in your repo.  
 
@@ -449,13 +451,15 @@ please post it to [the repo](https://github.com/yabe-diverta/katalon2puppeteer/i
 
 ---
 
-## Advanced
+# Advanced
 
-### :question: How debug?
+> Here is an advanced tips section to help you testing.
+
+# :question: How debug?
 
 Please refer to [public debugging tips for Puppeteer](https://github.com/puppeteer/puppeteer#debugging-tips).
 
-### :question: I don't use macos.
+# :question: I don't use macos.
 
 We recommend to use macos because of consistency.  
 It is because Chrome has different rendering behavior by OS.  
@@ -464,7 +468,7 @@ For example [Font issue](https://github.com/puppeteer/puppeteer/issues/661).
 It possibly makes you a big confusion hard to debug in a case across several OS used,  
 So please use [GithubActions: taking fresh screens](https://yabe-diverta.github.io/katalon2puppeteer/#githubactions-taking-fresh-screens) to take fresh screen captures instead of execution in local.
 
-### :question: The assertion is always filed, why?
+# :question: The assertion is always filed, why?
 
 In this tool,  
 we assumes that the target website is never changed, shows fixed contents in every executions.  
@@ -498,7 +502,7 @@ Just for information,
 you can use some other available options tasks can return.  
 Please checkout [Executor.js](https://github.com/yabe-diverta/katalon2puppeteer/blob/a58ca7485d329a736ca56a957ccdb80dc6d561a6/template/Executor.js#L33).
 
-### :question: The execution was failed by Nms timeout at `open.0.js`, why?
+# :question: The execution was failed by Nms timeout at `open.0.js`, why?
 
 As you can see the code `open.0.js`,  
 we specify `{ waitUntil: 'networkidle0' }` option to get the web page initially.
