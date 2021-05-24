@@ -354,7 +354,9 @@ you can find an artifact either the test is scceeded or not.
 Please download it, uzip it, and open it by Chrome.
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/d7e0af281826e4457ae8b8b322f1e979.png)](https://diverta.gyazo.com/d7e0af281826e4457ae8b8b322f1e979)
 
-You can find a result GUI screen powered by [reg-cli](https://github.com/reg-viz/reg-cli).
+You can find a result GUI screen powered by [reg-cli](https://github.com/reg-viz/reg-cli).  
+(below is the example as an error, 1 diff detected)
+[![Image from Gyazo](https://t.gyazo.com/teams/diverta/eb9e26123309421b74ccd6932afb0b88.png)](https://diverta.gyazo.com/eb9e26123309421b74ccd6932afb0b88)
 
 In the middle of the workflow,  
 there are several lines to take new screen captures and to compare old-new difference.  
@@ -484,7 +486,6 @@ you can use an option `disableScreenshot` to avoid taking it.
 Just for information,  
 you can use some other available options tasks can return.  
 Please checkout [Executor.js](https://github.com/yabe-diverta/katalon2puppeteer/blob/a58ca7485d329a736ca56a957ccdb80dc6d561a6/template/Executor.js#L33).
-
 
 ### :question: The execution was failed by Nms timeout at `open.0.js`, why?
 
