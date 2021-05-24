@@ -101,7 +101,7 @@ Let's proceed to the next to generate an executable testing scripts.
 ## Generate JS testing files.
 
 > :warning: If your OS is not macos, don't do this section (please take a look here to know how it works as a reference).  
-> Please checkout [tips](question-i-dont-use-macos) instead.
+> Please checkout [tips](#question-i-dont-use-macos) instead.
 
 Open another terminal window, change directory there.  
 Continue in an another terminal apart from the old one.  
