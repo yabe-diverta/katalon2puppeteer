@@ -343,12 +343,16 @@ git commit -m "test: add tester"
 git push
 ```
 
-Now you can find the workflow created in your Github repo website,  
-dispatch it manually.
+Now you can find the workflow created in your Github repo website.
+[![Image from Gyazo](https://t.gyazo.com/teams/diverta/ca6bc6c3303d9ca3edc0673c7d10bc33.png)](https://diverta.gyazo.com/ca6bc6c3303d9ca3edc0673c7d10bc33)
+
+Dispatch it manually.  
+[![Image from Gyazo](https://t.gyazo.com/teams/diverta/4cb12d66476eaac84c966d2332716f48.png)](https://diverta.gyazo.com/4cb12d66476eaac84c966d2332716f48)
 
 After a while it's done,  
 you can find an artifact either the test is scceeded or not.  
 Please download it, uzip it, and open it by Chrome.
+[![Image from Gyazo](https://t.gyazo.com/teams/diverta/d7e0af281826e4457ae8b8b322f1e979.png)](https://diverta.gyazo.com/d7e0af281826e4457ae8b8b322f1e979)
 
 You can find a result GUI screen powered by [reg-cli](https://github.com/reg-viz/reg-cli).
 

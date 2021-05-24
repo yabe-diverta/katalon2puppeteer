@@ -35,7 +35,7 @@ jobs:
           wait_on: http://localhost:3000  # <- change this value where your website is served at.
           scripts_dir: test/e2e # <- change this value depending on where your test files exists.
       - name: reg-cli
-        run: npx reg-cli tests/screen/capture tests/screen/newcapture diff -M 0.9 -R report.html
+        run: npx reg-cli test/e2e/capture test/e2e/newcapture diff -M 0.9 -R report.html
       - uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -43,8 +43,8 @@ jobs:
           path: |
             report.html
             diff
-            tests/screen/capture
-            tests/screen/newcapture
+            test/e2e/capture
+            test/e2e/newcapture
           retention-days: 7
 
   # slack:
