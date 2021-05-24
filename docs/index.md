@@ -1,5 +1,18 @@
 # Turorial for visual e2e screen shot testing.
 
+## Motivation
+
+While developping and providing vary applications,  
+you would realize it's really hard to know either the apps are working expectedly now.
+
+Sometimes backends may not work,  
+sometimes IaaS platform is down.  
+Or your latest change like changing global CSS made your application critical issues, and it would been left.
+
+To prevent it, you should prepare some tests, and make them run regularly.
+
+We'll introduce how maintain your application by visual regression e2e testing with the tool [katalon2puppeteer](https://www.npmjs.com/package/katalon2puppeteer).
+
 ## Prerequisites
 
 - chrome
@@ -15,15 +28,27 @@ If you don't have yarn in your laptop, please run following comand:
 Before stating this tutorial,  
 you have to provide the real-world example application at first for testing.
 
+Please folk a [public example (using nuxt)](https://github.com/devJang/nuxt-realworld).  
+[![Image from Gyazo](https://t.gyazo.com/teams/diverta/97a97eed78fc45ee49c5d5bac0925721.png)](https://diverta.gyazo.com/97a97eed78fc45ee49c5d5bac0925721)
+
+Once folked the repository,  
+copy the clone command.  
+[![Image from Gyazo](https://t.gyazo.com/teams/diverta/e8c4c66742dfa225eefbf10c50fd8656.png)](https://diverta.gyazo.com/e8c4c66742dfa225eefbf10c50fd8656)
+
 Open your terminal window, clone a public example.  
 ```sh
-git clone git@github.com:devJang/nuxt-realworld.git
+git clonse COPIED_VALUE
+```
+
+Then, initialize it.
+```sh
 cd nuxt-realworld
 yarn install  # <- here would take a few minutes
 yarn dev
 ```
 
-Then you would notice some messages in your console.  
+After waited for a while,  
+you would notice some messages in your console.  
 ```sh
 
 ✔ Client
@@ -152,8 +177,16 @@ Finally, kick it.
 `node test/e2e/ExampleTest/index.js`
 
 Magic happens.  
-Your Chrome automatically opens and does manipulations you've resorded each by each.  
+Your Chrome automatically opens and does manipulations you've recorded one by one.  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/29b33272c5731d74732dc7d4be89d288.gif)](https://diverta.gyazo.com/29b33272c5731d74732dc7d4be89d288)
+
+> :warning: An error happens?
+> Is that `Error: net::ERR_CONNECTION_REFUSED at http://localhost:3000/`?
+> Could you confirm you're running local server with the command `npm run dev`
+
+> :warning: Your test failed by execution timeout?
+> Unfortunately, it's an error you need to adjust some codes.
+> Please checkout [Advanced](#Advanced) section.
 
 After a wile,  
 your test will be done and output message (unless the test does not fail).  
@@ -265,6 +298,16 @@ exports a screen capture into `src/test/capture`.
 
 ## Setup CI.
 
+Push your files to Github before proceed this section:  
+```sh
+git add .
+git commit -m "test: add test resources"
+git push
+```
+
+OK, you've done all of your test before actual assertions.  
+Set up CI (GithubActions) for daily testing.
+
 ### GithubActions: assert the latest screen captures.
 
 You did to run a test and taking screen captures above,  
@@ -296,7 +339,7 @@ Second, adjust some lines `screen.yaml` for your PJ.
 Finally, commit & update.
 ```sh
 git add ./.github
-git commit -m "ci: add tester"
+git commit -m "test: add tester"
 git push
 ```
 
@@ -322,6 +365,13 @@ Moreover,
 in the head part of the workflow,  
 defined regular execution written as cron command,  
 thus this test will be dispatched every day.
+
+#### Bonus
+
+You can even have notifications when the test are failed.  
+Please checkout commented out lines in `screen.yml`,  
+and setup notification with Webhook.  
+Please refere to [slack-notify](https://github.com/marketplace/actions/slack-notify) GithubActions app.
 
 ### GithubActions: taking fresh screens.
 
@@ -354,7 +404,7 @@ Second, adjust some lines `update-screen.yaml` for your PJ.
 Finally, commit & update.
 ```sh
 git add ./.github
-git commit -m "ci: add an updater of screen captures"
+git commit -m "test: add an updater of screen captures"
 git push
 ```
 
@@ -371,6 +421,14 @@ confirm it by pulling the latest.
 git pull
 ls -la test/e2e/capture # <- will show screen captures.
 ```
+
+## Wrapping up
+
+You have your own testing way.  
+you can customize the code freely.
+
+If the template `k2p` generated has issues,  
+please post it to [the repo](https://github.com/yabe-diverta/katalon2puppeteer/issues).
 
 ---
 
@@ -418,6 +476,10 @@ you can use an option `disableScreenshot` to avoid taking it.
 +    return { disableScreenshot: true }
 }
 ```
+
+Just for information,  
+you can use some other available options tasks can return.  
+Please checkout [Executor.js](https://github.com/yabe-diverta/katalon2puppeteer/blob/a58ca7485d329a736ca56a957ccdb80dc6d561a6/template/Executor.js#L33).
 
 
 ### :question: The execution was failed by Nms timeout at `open.0.js`, why?

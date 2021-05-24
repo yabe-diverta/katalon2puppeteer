@@ -8,7 +8,6 @@ env:
 
 jobs:
   e2e:
-    if: "github.repository == 'diverta/kuroco_e2e_test'"
     runs-on: macos-latest
     steps:
       - name: Checkout Locally
