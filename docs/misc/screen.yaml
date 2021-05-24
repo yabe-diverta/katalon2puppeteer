@@ -48,16 +48,16 @@ jobs:
             tests/screen/newcapture
           retention-days: 7
 
-  slack:
-    needs: [e2e]
-    runs-on: ubuntu-latest
-    if: failure() && ${{ secrets.SLACK_WEBHOOK }}
-    steps:
-      - name: Slack Notification on Failure
-        uses: rtCamp/action-slack-notify@master
-        env:
-          SLACK_CHANNEL: notice-kuroco_e2e_test
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: 'Test Failure :boom: at *Kuroco Management Screen*'
-          SLACK_MESSAGE: 'https://kuroco-e2e-test-screen.herokuapp.com/'
-          SLACK_COLOR: danger
+  # slack:
+  #   needs: [e2e]
+  #   runs-on: ubuntu-latest
+  #   if: failure()
+  #   steps:
+  #     - name: Slack Notification on Failure
+  #       uses: rtCamp/action-slack-notify@master
+  #       env:
+  #         SLACK_CHANNEL: notice-kuroco_e2e_test
+  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  #         SLACK_TITLE: 'Test Failure :boom: at *Kuroco Management Screen*'
+  #         SLACK_MESSAGE: 'https://kuroco-e2e-test-screen.herokuapp.com/'
+  #         SLACK_COLOR: danger
