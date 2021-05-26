@@ -6,7 +6,7 @@ nav_order: 2
 
 # Shortcuts
 
-We'll review below.
+We'll conduct below from now on!
 ```sh
 # run local server for your application in advance if it's supposed to be executed in your local
 # record your manipulations through katalon web recorder, then dump it to ~/Download/ExampleTest.json
