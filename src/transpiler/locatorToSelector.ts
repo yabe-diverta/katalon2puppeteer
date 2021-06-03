@@ -27,7 +27,7 @@ export function locatorToSelector(target: any) {
   } else if (target.substring(0, 5) === 'name=') {
     selector = "//*[@name='" + target.substring(5, target.length) + "']";
   } else if (target.substring(0, 3) === 'id=') {
-    selector = "//*[@name='" + target.substring(3, target.length) + "']";
+    selector = "//*[@id='" + target.substring(3, target.length) + "']";
   } else if (target.substring(0, 5) === 'link=') {
     let offset = 5;
     if (target.substring(5, 11) == 'exact:') {
