@@ -34,7 +34,7 @@ export function locatorToSelector(target: any) {
       offset = 11;
     }
     selector =
-      "//a[contains(text(),'" + target.substring(offset, target.length) + "')]";
+      "//a[normalize-space()='" + target.substring(offset, target.length) + "']"
   }
 
   return selector;
