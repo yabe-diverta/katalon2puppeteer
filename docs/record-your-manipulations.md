@@ -34,6 +34,9 @@ so do anything freely what you want to test.
 Then each manipulations well be recorderd in Kataron Recorder automatically.
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/a2fbb40234ebca48fc674c903ced1ab7.gif)](https://diverta.gyazo.com/a2fbb40234ebca48fc674c903ced1ab7)
 
+> :warning: It's better to record wihtout cookies if your app requires login.  
+> Please checkout [tips](/katalon2puppeteer/advanced/how-login.html) instead.
+
 Okay now you are fullfilled with manipulations,  
 click the `Stop` button.  
 [![Image from Gyazo](https://t.gyazo.com/teams/diverta/38e84b1d0d1f80642dd76c9a526b3366.png)](https://diverta.gyazo.com/38e84b1d0d1f80642dd76c9a526b3366)
