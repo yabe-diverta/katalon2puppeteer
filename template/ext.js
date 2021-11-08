@@ -17,14 +17,14 @@ async function waitTillHTMLRendered(timeout = 30000, checkDurationMsecs = 1000, 
     let html = await this.content();
     let currentHTMLSize = html.length;
 
-    let bodyHTMLSize = await this.evaluate(() => document.body.innerHTML.length);
-
     if (debug) {
+      let bodyHTMLSize = await this.evaluate(() => document?.body?.innerHTML.length || 0);
       console.log('last: ', lastHTMLSize, ' <> curr: ', currentHTMLSize, ' body html size: ', bodyHTMLSize);
     }
 
-    if (lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize) countStableSizeIterations++;
-    else countStableSizeIterations = 0; //reset the counter
+    lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize ?
+      countStableSizeIterations++ :
+      countStableSizeIterations = 0;
 
     if (countStableSizeIterations >= minStableSizeIterations) {
       if (debug) {
