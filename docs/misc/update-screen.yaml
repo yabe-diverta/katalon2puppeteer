@@ -29,9 +29,10 @@ jobs:
         id: e2e-sequential-puppeteer-action
         uses: yabe-diverta/e2e-sequential-puppeteer-action@v2
         with:
-          serve_cmd: npm run serve  # <- remove this line if your want to test public website.
-          wait_on: http://localhost:3000  # <- change this value where your website is served at.
+          serve_cmd: npm run serve # <- remove this line if your want to test public website.
+          wait_on: http://localhost:3000 # <- change this value where your website is served at.
           scripts_dir: test/e2e # <- change this value depending on where your test files exists.
+          update_captures: true
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -43,5 +44,5 @@ jobs:
             chore: Update capchers
 
             created by manually dispatch event.  
-            **note**: because we've already made sure the latest captures are all valid. checkout tests/screen/capture.            
+            **note**: because we've already made sure the latest captures are all valid. checkout tests/screen/capture.
           draft: false
